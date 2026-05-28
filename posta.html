@@ -16,8 +16,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
     position: relative;
+    padding: 24px 0;
   }
 
   /* Sfondo sfocato tipo studio TV */
@@ -446,6 +448,7 @@
 </div>
 
 <audio id="audio" src="audio.m4a" preload="auto"></audio>
+<audio id="sigla" src="sigla.mp3" preload="auto" loop></audio>
 
 <script>
 // ── Cuoricini fluttuanti ────────────────────────────────────
@@ -466,6 +469,21 @@ function spawnHeart() {
 }
 
 setInterval(spawnHeart, 600);
+
+// ── Sigla sottofondo ────────────────────────────────────────
+const sigla = document.getElementById('sigla');
+sigla.volume = 0.25; // volume basso per non coprire il messaggio
+
+// Parte al primo tocco/click (i browser bloccano autoplay senza interazione)
+let siglaStarted = false;
+function startSigla() {
+  if (!siglaStarted) {
+    siglaStarted = true;
+    sigla.play().catch(() => {});
+  }
+}
+document.addEventListener('click', startSigla, { once: true });
+document.addEventListener('touchstart', startSigla, { once: true });
 
 // ── Busta ───────────────────────────────────────────────────
 let envelopeOpened = false;
@@ -491,6 +509,7 @@ function toggleAudio() {
   if (!playing) {
     audio.play();
     playing = true;
+    sigla.volume = 0.05; // abbassa la sigla durante il messaggio
     playBtn.classList.add('playing');
     playIcon.style.display = 'none';
     waves.classList.add('show');
@@ -499,6 +518,7 @@ function toggleAudio() {
   } else {
     audio.pause();
     playing = false;
+    sigla.volume = 0.25; // ripristina volume sigla
     playBtn.classList.remove('playing');
     playIcon.style.display = 'block';
     waves.classList.remove('show');
@@ -518,6 +538,7 @@ audio.addEventListener('timeupdate', () => {
 
 audio.addEventListener('ended', () => {
   playing = false;
+  sigla.volume = 0.25; // ripristina volume sigla
   playBtn.classList.remove('playing');
   playIcon.style.display = 'block';
   waves.classList.remove('show');
