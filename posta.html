@@ -376,6 +376,47 @@
     to   { transform: scaleY(1.2); }
   }
 
+/* Schermata di ingresso */
+  #entryScreen {
+    position: fixed;
+    inset: 0;
+    background: #0a0a0a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    cursor: pointer;
+  }
+
+  #entryScreen .entry-title {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(28px, 7vw, 52px);
+    color: #fff;
+    text-shadow: 0 0 40px rgba(255,100,100,0.5);
+    margin-bottom: 16px;
+  }
+
+  #entryScreen .entry-btn {
+    background: linear-gradient(135deg, #c00, #900);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 16px 40px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 4px 24px rgba(200,0,0,0.4);
+    animation: pulse 2s ease infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 4px 24px rgba(200,0,0,0.4); }
+    50%       { box-shadow: 0 4px 40px rgba(200,0,0,0.7); }
+  }
+
   .footer-note {
     margin-top: 24px;
     font-size: 11px;
@@ -385,6 +426,13 @@
 </style>
 </head>
 <body>
+
+<!-- Schermata ingresso -->
+<div id="entryScreen">
+  <div class="entry-title">C'è Posta Per Te</div>
+  <button class="entry-btn" onclick="enterPage()">💌 Apri la lettera</button>
+  <div class="entry-note" style="margin-top: 10px;">Attiva l'audio prima di entrare!</div>
+</div>
 
 <div class="hearts" id="hearts"></div>
 
@@ -443,7 +491,7 @@
     </div>
   </div>
 
-  <div class="footer-note">Mediaset · C'è Posta Per Te · Una serata speciale</div>
+  <div class="footer-note">· C'è Posta Per Te · Una serata speciale</div>
 
 </div>
 
@@ -472,18 +520,12 @@ setInterval(spawnHeart, 600);
 
 // ── Sigla sottofondo ────────────────────────────────────────
 const sigla = document.getElementById('sigla');
-sigla.volume = 0.25; // volume basso per non coprire il messaggio
+sigla.volume = 0.25;
 
-// Parte al primo tocco/click (i browser bloccano autoplay senza interazione)
-let siglaStarted = false;
-function startSigla() {
-  if (!siglaStarted) {
-    siglaStarted = true;
-    sigla.play().catch(() => {});
-  }
+function enterPage() {
+  sigla.play().catch(() => {});
+  document.getElementById('entryScreen').style.display = 'none';
 }
-document.addEventListener('click', startSigla, { once: true });
-document.addEventListener('touchstart', startSigla, { once: true });
 
 // ── Busta ───────────────────────────────────────────────────
 let envelopeOpened = false;
